@@ -58,38 +58,38 @@ public class JasonEditor extends JFrame {
 
 		/** Actions */
 		/* file action */
-		Action newTXTAction = new NewTXTAction("New txt", new ImageIcon("../graph/txt.png"));
-		Action newCSVAction = new NewCSVAction("New csv", new ImageIcon("../graph/csv.png"));
-		Action openAction = new OpenAction("Open", new ImageIcon("../graph/open.gif"), KeyEvent.VK_O);
-		Action saveAction = new SaveAction("Save", new ImageIcon("../graph/save.gif"), KeyEvent.VK_S);
-		Action saveAsAction = new SaveAsAction("Save As", new ImageIcon("../graph/saveAs.gif"), KeyEvent.VK_A);
-		Action saveAllAction = new SaveAllAction("Save All", new ImageIcon("../graph/save_all.png"), KeyEvent.VK_A);
-		Action closeAction = new CloseAction("Close", new ImageIcon("../graph/close.gif"), KeyEvent.VK_C);
-		Action closeAllAction = new CloseAllAction("Close All", new ImageIcon("../graph/close_all.png"));
+		Action newTXTAction = new NewTXTAction("New txt", new ImageIcon("./graph/txt.png"));
+		Action newCSVAction = new NewCSVAction("New csv", new ImageIcon("./graph/csv.png"));
+		Action openAction = new OpenAction("Open", new ImageIcon("./graph/open.gif"), KeyEvent.VK_O);
+		Action saveAction = new SaveAction("Save", new ImageIcon("./graph/save.gif"), KeyEvent.VK_S);
+		Action saveAsAction = new SaveAsAction("Save As", new ImageIcon("./graph/saveAs.gif"), KeyEvent.VK_A);
+		Action saveAllAction = new SaveAllAction("Save All", new ImageIcon("./graph/save_all.png"), KeyEvent.VK_A);
+		Action closeAction = new CloseAction("Close", new ImageIcon("./graph/close.gif"), KeyEvent.VK_C);
+		Action closeAllAction = new CloseAllAction("Close All", new ImageIcon("./graph/close_all.png"));
 
 		/* help action */
-		Action textAction = new TextAction("Show Text", new ImageIcon("../graph/text.gif"), KeyEvent.VK_T);
-		Action aboutAction = new AboutAction("About", new ImageIcon("../graph/about.gif"), KeyEvent.VK_H);
+		Action textAction = new TextAction("Show Text", new ImageIcon("./graph/text.gif"), KeyEvent.VK_T);
+		Action aboutAction = new AboutAction("About", new ImageIcon("./graph/about.gif"), KeyEvent.VK_H);
 
 		/* table action */
 		// row action
-		Action addUpperRowAction = new AddUpperRowAction("add upper row", new ImageIcon("../graph/upper_row.PNG"));
-		Action addLowerRowAction = new AddLowerRowAction("add lower row", new ImageIcon("../graph/lower_row.PNG"));
+		Action addUpperRowAction = new AddUpperRowAction("add upper row", new ImageIcon("./graph/upper_row.PNG"));
+		Action addLowerRowAction = new AddLowerRowAction("add lower row", new ImageIcon("./graph/lower_row.PNG"));
 
 		// column action
 		Action addLeftColumnAction = new AddLeftColumnAction("add left column",
-				new ImageIcon("../graph/left_column.PNG"));
+				new ImageIcon("./graph/left_column.PNG"));
 		Action addRightColumnAction = new AddRightColumnAction("add right column",
-				new ImageIcon("../graph/right_column.PNG"));
+				new ImageIcon("./graph/right_column.PNG"));
 
 		// remove action
-		Action removeRowAction = new RemoveRowAction("remove row", new ImageIcon("../graph/remove_row.PNG"));
+		Action removeRowAction = new RemoveRowAction("remove row", new ImageIcon("./graph/remove_row.PNG"));
 		Action removeColumnAction = new RemoveColumnAction("remove column",
-				new ImageIcon("../graph/remove_column.PNG"));
+				new ImageIcon("./graph/remove_column.PNG"));
 
 		// otehr aciotn
-		Action clearCellAction = new ClearCellAction("Clear cell", new ImageIcon("../graph/clear_cell.png"));
-		Action newCellAction = new NewCellAction("New cell", new ImageIcon("../graph/new_cell.png"));
+		Action clearCellAction = new ClearCellAction("Clear cell", new ImageIcon("./graph/clear_cell.png"));
+		Action newCellAction = new NewCellAction("New cell", new ImageIcon("./graph/new_cell.png"));
 
 		/** menu bar **/
 		menuBar = new JMenuBar();
@@ -103,7 +103,7 @@ public class JasonEditor extends JFrame {
 
 		/* file menu */
 		JMenu newMenu = new JMenu("New");
-		newMenu.setIcon(new ImageIcon("../graph/new.png"));
+		newMenu.setIcon(new ImageIcon("./graph/new.png"));
 		JMenuItem openMenuItem = new JMenuItem(openAction);
 		JMenuItem saveMenuItem = new JMenuItem(saveAction);
 		JMenuItem saveAsMenuItem = new JMenuItem(saveAsAction);
@@ -141,7 +141,7 @@ public class JasonEditor extends JFrame {
 		tableMenu.add(newCellMenuItem);
 
 		// nest rowMenu
-		rowMenu.setIcon(new ImageIcon("../graph/row.jpg"));
+		rowMenu.setIcon(new ImageIcon("./graph/row.jpg"));
 		JMenuItem addUpperRowMenuItem = new JMenuItem(addUpperRowAction);
 		JMenuItem addLowerRowMenuItem = new JMenuItem(addLowerRowAction);
 		JMenuItem removeRowMenuItem = new JMenuItem(removeRowAction);
@@ -152,7 +152,7 @@ public class JasonEditor extends JFrame {
 		rowMenu.add(removeRowMenuItem);
 
 		// nest columnMenu
-		columnMenu.setIcon(new ImageIcon("../graph/column.jpg"));
+		columnMenu.setIcon(new ImageIcon("./graph/column.jpg"));
 		JMenuItem addLeftColumnMenuItem = new JMenuItem(addLeftColumnAction);
 		JMenuItem addRightColumnMenuItem = new JMenuItem(addRightColumnAction);
 		JMenuItem removeColumnMenuItem = new JMenuItem(removeColumnAction);
@@ -185,9 +185,9 @@ public class JasonEditor extends JFrame {
 		// document button
 		JComboBox size = new JComboBox(sizeArray);
 		size.setSelectedIndex(2); // default size 12
-		JToggleButton bold = new JToggleButton(new ImageIcon("../graph/bold.png"));
-		JToggleButton italic = new JToggleButton(new ImageIcon("../graph/italic.png"));
-		JToggleButton underlind = new JToggleButton(new ImageIcon("../graph/underline.png"));
+		JToggleButton bold = new JToggleButton(new ImageIcon("./graph/bold.png"));
+		JToggleButton italic = new JToggleButton(new ImageIcon("./graph/italic.png"));
+		JToggleButton underlind = new JToggleButton(new ImageIcon("./graph/underline.png"));
 		JComboBox view = new JComboBox(viewArray);
 
 		// table button
@@ -849,7 +849,7 @@ public class JasonEditor extends JFrame {
 			int value = JOptionPane.showConfirmDialog(null, "Want to save the file ?", "Want to save all the file?",
 					JOptionPane.YES_OPTION);
 			if (value == JOptionPane.YES_OPTION) {
-				Action saveAllAction = new SaveAllAction("Save All", new ImageIcon("../graph/saveAs.gif"),
+				Action saveAllAction = new SaveAllAction("Save All", new ImageIcon("./graph/saveAs.gif"),
 						KeyEvent.VK_A);
 				saveAllAction.actionPerformed(e);
 			}
