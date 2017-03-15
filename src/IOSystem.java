@@ -9,11 +9,11 @@ import java.io.*;
 
 /*Title IOSystem
  * Author: Liu Ho Yin
- * Last Modifired: 25-5-2012
- * 
+ * V1: Last Modified: 25-5-2012
+ * V2 Support Double Quote: Last Modified: 16-3-2012
  * This class is just used to output and input with static method*/
 public class IOSystem {
-	static String line = System.getProperty("line.separator");
+	private static String LINE_SEPARATOR = System.getProperty("line.separator");
 
 	// read for txt
 	public static String readTXT(File file) {
@@ -59,46 +59,62 @@ public class IOSystem {
 			int noOfRow = model.getRowCount();
 			int noOfColumn = model.getColumnCount();
 
-			// since the table size may be bigger than the value contain in the
-			// file
-			// we need to check out what value needed to be outputed
-			// the counter is about the exact max row and column index we need
-			// to output
+			// find the last row and column contains record
+			// trim the rows and columns in saving to a file
 			int maxColumnIndex = 0;
 			int maxRowIndex = 0;
-
-			// still have a word in a line && column index is bigger than the
-			// counter-> expand the coulumn
-			// still have a word in a line && row index is bigger than the
-			// counter -> expand the row couter
-			Object[][] copyOfCells = new Object[noOfRow][noOfColumn];
+			
 			for (int i = 0; i < noOfRow; i++) {
 				for (int j = 0; j < noOfColumn; j++) {
 					// get the cell value
 					Object value = model.getValueAt(i, j);
 					// increase counter if possible
-					if (value != "" && j > maxColumnIndex)
+					if (value != null && !value.equals("") && j > maxColumnIndex)
 						maxColumnIndex = j;
-					if (value != "" && i > maxRowIndex)
+					if (value != null && !value.equals("") && i > maxRowIndex)
 						maxRowIndex = i;
 				}
 			}
 
-			// by retrive the size of table, get their value
-			String output = "";
+			// by retrieve the size of table, get their value
+			StringBuilder builder = new StringBuilder();
 			for (int i = 0; i <= maxRowIndex; i++) {
 				for (int j = 0; j <= maxColumnIndex; j++) {
-					if (j == maxColumnIndex)// last item
-						output += model.getValueAt(i, j);
-					else
-						output += model.getValueAt(i, j) + ",";
+					Object value = model.getValueAt(i, j);
+					String cellContent = (String) value;
+					if (cellContent != null)
+					{
+						boolean containDoubleQuote = cellContent.contains("\"");
+						boolean containCommas = cellContent.contains(",");
+						boolean mustEscape = containDoubleQuote || containCommas;
+						
+						if (containDoubleQuote){
+							cellContent = cellContent.replaceAll("\"", "\"\"");
+						} 
+						
+						if (mustEscape){
+							builder.append('"');
+							builder.append(cellContent);
+							builder.append('"');
+						}
+						else {
+							builder.append(value);
+						}
+					} else {
+						builder.append(value);
+					}
+					
+					if (j != maxColumnIndex){
+						builder.append(',');
+					}
 				}
-				output += line;
+				
+				builder.append(LINE_SEPARATOR);
 			}
-
+			
 			try {
 				BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-				writer.write(output);
+				writer.append(builder);
 				writer.close();
 			} catch (Exception ex) {
 				System.out.println("out put error ");
