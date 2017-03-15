@@ -11,8 +11,12 @@ import java.util.List;
 public class CSVParser {
 
 	private CSVLineParser lineParser;
-	public String[][] results;
+	private String[][] results;
 
+	public String[][] getResults(){
+		return results;
+	}
+	
 	public CSVParser() {
 		this.lineParser = new CSVLineParser();
 	}

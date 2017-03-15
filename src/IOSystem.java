@@ -1,4 +1,7 @@
 import javax.swing.table.*;
+
+import jcsveditor.parser.CSVParser;
+
 import java.util.*;
 import java.awt.*;
 import javax.swing.*;
@@ -33,46 +36,8 @@ public class IOSystem {
 
 	// read for csv
 	public static Object[][] readCSV(File file) {
-		Object[][] cells = null;
-		int noOfRow = 0;
-		int maxColumn = 0;
-		Vector<String[]> v = new Vector<String[]>();
-
-		BufferedReader reader;
-		String line;
-		try {
-			maxColumn = 0; // variable that tell the array ho wmuch it is
-							// required
-			reader = new BufferedReader(new FileReader(file));
-			while ((line = reader.readLine()) != null) {
-				String[] cellsInEachLine = line.split(",");
-				if (cellsInEachLine.length > maxColumn)
-					maxColumn = cellsInEachLine.length;
-
-				System.out.println(cellsInEachLine.length);
-				v.add(cellsInEachLine);
-				noOfRow++;
-			}
-
-			// make the data as a 2d array
-			cells = new Object[noOfRow][maxColumn];
-			for (int i = 0; i < cells.length; i++) {
-				String[] cellsInLine = v.get(i);
-				for (int j = 0; j < maxColumn; j++) {
-					if (j >= cellsInLine.length) // the string [] is going index
-													// out of bound
-						cells[i][j] = "";
-					else
-						cells[i][j] = cellsInLine[j];
-				}
-			}
-
-			reader.close();
-		} catch (Exception e) {
-			System.out.println("input error");
-			System.out.println("Please input a good csv fie");
-		}
-		return cells;
+		CSVParser parser = new CSVParser(file);
+		return parser.getResults();
 	}
 
 	// write file and base on component type
