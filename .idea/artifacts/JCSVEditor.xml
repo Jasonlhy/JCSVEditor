@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="JCSVEditor">
+    <output-path>$PROJECT_DIR$/out/artifacts/JCSVEditor</output-path>
+    <root id="archive" name="JCSVEditor.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/src/main/java/META-INF/MANIFEST.MF" />
+      </element>
+      <element id="module-output" name="JCSVEditor" />
+      <element id="directory" name="graph">
+        <element id="dir-copy" path="$PROJECT_DIR$/graph" />
+      </element>
+    </root>
+  </artifact>
+</component>
