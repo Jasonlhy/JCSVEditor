@@ -1,10 +1,7 @@
-package jcsveditor.table;
+package jcsveditor.view;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import javax.swing.table.AbstractTableModel;
-import java.util.List;
 
 import static org.junit.Assert.assertArrayEquals;
 
@@ -34,7 +31,7 @@ public class TestCSVTableModel {
 
     @Test
     public void testAddRow(){
-        model.addRow(0, 1);
+        model.addRowBefore(0, 1);
 
         Object [][] actual = model.getCells();
 
@@ -54,6 +51,37 @@ public class TestCSVTableModel {
         expected[3][0] = "aaa3";
         expected[3][1] =  "bbb3";
         expected[3][2] = "ccc3";
+
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void testAddAfter(){
+        model.addRowBefore(1, 2);
+
+        Object [][] actual = model.getCells();
+
+        Object [][] expected  = new String[5][3];
+
+        expected[0][0] = "aaa1";
+        expected[0][1] =  "bbb1";
+        expected[0][2] = "ccc1";
+
+        expected[1][0] = "";
+        expected[1][1] =  "";
+        expected[1][2] = "";
+
+        expected[2][0] = "";
+        expected[2][1] =  "";
+        expected[2][2] = "";
+
+        expected[3][0] = "aaa2";
+        expected[3][1] =  "bbb2";
+        expected[3][2] = "ccc2";
+
+        expected[4][0] = "aaa3";
+        expected[4][1] =  "bbb3";
+        expected[4][2] = "ccc3";
 
         assertArrayEquals(expected, actual);
     }

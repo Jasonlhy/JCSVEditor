@@ -1,3 +1,5 @@
+import jcsveditor.view.CSVTableModel;
+
 import javax.swing.*;
 import javax.swing.text.DefaultStyledDocument;
 import java.awt.*;
@@ -9,7 +11,7 @@ import java.util.Observer;
 /* Title: ContePanel
 * Aurthor : Liu Ho Yin
 * Last Modified : 25-5-2012
-* 
+*
 * This class is a view assoicated with the FIleRecord mdeol which stores file records
 * It owns JTabbedPane, JDesktopPane. Both of them are used to show the file content.
 * The view between them can be swtiched

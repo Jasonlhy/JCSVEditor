@@ -1,14 +1,17 @@
+package jcsveditor.view;
+
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+import java.util.Arrays;
 
-/* Title CSVTableModel
+/* Title jcsveditor.table.CSVTableModel
  * Aurthor : Liu Ho Yin
  * Last Modified: 25-5-2012
  *
- * This class is the table model for shwoing csv 
+ * This class is the table model for shwoing csv
  * it have some advanced function such as inserting row ,removing row*/
 
-class CSVTableModel extends AbstractTableModel {
+public class CSVTableModel extends AbstractTableModel {
 
     private Object[][] cells;
     private String[] columnNames;
@@ -32,13 +35,16 @@ class CSVTableModel extends AbstractTableModel {
         this.columnNames = columnNames;
     }
 
+    public Object[][] getCells() {
+        return cells;
+    }
+
     /*
-     * return columnName for table header Inputted the columName ,use them
-     * otherwise user A,B,C,D from abstractTableModel
-     */
+         * return columnName for table header Inputted the columName ,use them
+         * otherwise user A,B,C,D from abstractTableModel
+         */
     public String getColumnName(int c) {
-        String name = (columnNames != null) ? columnNames[c] : super.getColumnName(c);
-        return name;
+        return (columnNames != null) ? columnNames[c] : super.getColumnName(c);
     }
 
     public Class getColumnClass(int c) {
@@ -105,37 +111,56 @@ class CSVTableModel extends AbstractTableModel {
         fireTableStructureChanged();
     }
 
-    /*
-     * add a new Rowinto the exisiting table make a new cells copy the origninal
-     * value, initiazlie the new added cells redirect the object reference for
-     * cells data
+    /**
+     * Add row(s) before a row
+     *
+     * @param idx
+     * @param count
      */
-    public void addRow(int firstNewIndex, int addCount) {
-        // prepare to copy
-        int noOfRow = getRowCount();
-        int noOfColumn = getColumnCount();
-        Object[][] newCells = new Object[noOfRow + addCount][noOfColumn];
+    public void addRowBefore(int idx, int count){
+        if (idx < 0 || idx >= getRowCount()){
+            throw new IllegalArgumentException("Please provide a valid index of row to be inserted before");
+        }
+        addRow(idx, count);
+    }
 
-        // this is a row pointer for the new created array
-        // to help it from getting the value from the original cell
-        // when the row index of the original cells bigger than the new index
-        // that mean that value should be at the lower side of the new added row
-        // and the data at the lower side of the new added column should be
-        // shifted by number of row added
-        // and we shift the row pointer down by number of row added to let the
-        // new added cells to frech the correct data
+    /**
+     * Add row(s) after a row
+     *
+     * @param idx
+     * @param count
+     */
+    public void addRowAfter(int idx, int count){
+        if (idx < 0 || idx >= getRowCount()){
+            throw new IllegalArgumentException("Please provide a valid index of row to be inserted after");
+        }
+        addRow(idx + 1, count);
+    }
+
+    /**
+     * Generic addRow function implements addRowBefore and addRowAfter
+     * Because addRowAfter(idx) = addRowBefore(idx + 1)
+     * It assumes the data is valid
+     *
+     * @param beforeRow
+     * @param addCount
+     */
+    private void addRow(int beforeRow, int addCount) {
+        // 1. Create a new array
+        // 2. Copy the existing content to the new array with skipping the "new row"
+        int noRow = getRowCount();
+        int noCol = getColumnCount();
+        Object[][] newCells = new Object[noRow + addCount][noCol];
+
         int rP;
-        for (int i = 0; i < noOfRow; i++) {
-            rP = (i >= firstNewIndex) ? i + addCount : i;
-            for (int j = 0; j < noOfColumn; j++) {
-                newCells[rP][j] = cells[i][j];
-            }
+        for (int i = 0; i < noRow; i++) {
+            rP = (i >= beforeRow) ? (i + addCount) : i;
+            System.arraycopy(cells[i], 0, newCells[rP], 0, noCol);
         }
 
-        // initiazlie the new added cells
-        for (int i = 0; i < noOfColumn; i++) {
-            for (int j = 0; j < addCount; j++)
-                newCells[firstNewIndex + j][i] = "";
+        // initialize the new added cells
+        for (int j = 0; j < addCount; j++){
+            Arrays.fill(newCells[beforeRow + j], "");
         }
 
         // redirect the object reference

@@ -1,3 +1,5 @@
+import jcsveditor.view.CSVTableModel;
+
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -631,21 +633,13 @@ public class JasonEditor extends JFrame {
                 JTable table = (JTable) c;
                 CSVTableModel model = (CSVTableModel) table.getModel();
 
-                int firstSelectedRow = table.getSelectedRow(); // a flag to
-                // determine if
-                // there is any
-                // selection
-                if (firstSelectedRow == -1) // no selection-> default add to the
-                    // toppest
-                    model.addRow(0, 1);
-                else {
-                    int[] rows = table.getSelectedRows();
-                    // find the first selected table row index, and the new
-                    // index is the same as it
-                    int firstNewIndex = rows[0];
-                    int addCount = rows.length;
-                    model.addRow(firstNewIndex, addCount);
-                }
+                // no selection -> default add to the top
+                int[] rows = table.getSelectedRows();
+                boolean isSelected = (rows.length > 0);
+                int idx = (isSelected) ? rows[0] : 0;
+                int count = (isSelected) ? rows.length : 1;
+
+                model.addRowBefore(idx, count);
             }
 
         }
@@ -666,26 +660,14 @@ public class JasonEditor extends JFrame {
                 JTable table = (JTable) c;
                 CSVTableModel model = (CSVTableModel) table.getModel();
 
-                int firstSelectedRow = table.getSelectedRow(); // a flag to
-                // determine if
-                // there is any
-                // selection
-                if (firstSelectedRow == -1) {
-                    // get the index of last row in table, the new added row
-                    // index increase by 1
-                    int firstNewIndex = table.getRowCount() - 1 + 1;
-                    model.addRow(firstNewIndex, 1);
-                } // no selection-> default add to the toppest
-                else {
-                    int[] rows = table.getSelectedRows();
-                    // find the last selected table row index, and the new added
-                    // row index increase by 1
-                    int firstNewIndex = rows[rows.length - 1] + 1;
-                    int addCount = rows.length;
-                    model.addRow(firstNewIndex, addCount);
-                }
-            }
+                // no selection -> default add to the bottom
+                int[] rows = table.getSelectedRows();
+                boolean isSelected = (rows.length > 0);
+                int idx = (isSelected) ? rows[rows.length - 1] : (table.getRowCount() - 1);
+                int count = (isSelected) ? rows.length : 1;
 
+                model.addRowAfter(idx, count);
+            }
         }
     }
 
