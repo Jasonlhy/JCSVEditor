@@ -13,14 +13,14 @@ public class CSVParser {
         return results;
     }
 
-    public CSVParser() {
+    public CSVParser(){
         this.lineParser = new CSVLineParser();
     }
 
     public CSVParser(File file) {
         this.lineParser = new CSVLineParser();
 
-        List<List<String>> rowValues = new LinkedList<List<String>>();
+        List<List<String>> rowValues = new LinkedList<>();
         try {
             try (BufferedReader br = new BufferedReader(new FileReader(file))) {
                 int numRow = 0;

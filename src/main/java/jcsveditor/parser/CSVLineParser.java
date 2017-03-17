@@ -27,22 +27,6 @@ public class CSVLineParser {
     }
 
     /**
-     * Increment the index and check the character it is the expected character
-     * or not
-     *
-     * @param expectedChar
-     */
-    public void next(char expectedChar) {
-        if (peek() != expectedChar) {
-            // run time exceptions
-            // throw new JSONParseException("Expected " + expectedChar + " at "
-            // + idx + " but " + peek() + " is found");
-        }
-
-        idx++;
-    }
-
-    /**
      * Increment the index without checking the validity of the syntax
      */
     public void next() {
@@ -64,8 +48,8 @@ public class CSVLineParser {
         idx = 0;
 
         // prepare
-        List<String> cellValues = new LinkedList<String>();
-        char current = peek();
+        List<String> cellValues = new LinkedList<>();
+        char current;
 
         do {
             builder.setLength(0);
@@ -77,23 +61,26 @@ public class CSVLineParser {
                 readEscapedValue(builder);
                 cellValues.add(builder.toString());
             } else if (current == ',') {
-                // delimiter
+                // only will encounter ',' if ",,"
+                // other will be consumed by parsing in value
                 next();
-                // ,,
-                if (isEnd() || peek() == ',') {
-                    cellValues.add("");
-                }
+                cellValues.add("");
             } else {
                 readNonEscapedValue(builder);
                 cellValues.add(builder.toString());
             }
         } while (!isEnd());
 
+        // edge case: last one is commas
+        if (current == ','){
+            cellValues.add("");
+        }
+
         return cellValues;
     }
 
     /**
-     * Read everything until , or EOL
+     * Read everything to , or EOL
      *
      * @param builder
      */
@@ -109,6 +96,7 @@ public class CSVLineParser {
 
             char c = peek();
             if (c == ',') {
+                next();
                 foundComma = true;
             } else {
                 builder.append(c);
@@ -118,7 +106,7 @@ public class CSVLineParser {
     }
 
     /**
-     * Read everything to " before , or to " before EOL
+     * Read everything to ", or to "EOL
      *
      * @param builder
      */
@@ -146,6 +134,11 @@ public class CSVLineParser {
                     if (!isEnd() && peek() != ',') {
                         throw new CSVParseException("Expected , at columns: " + idx);
                     }
+
+                    if (!isEnd() && peek() == ','){
+                        next();
+                    }
+
                     foundDoubleQuote = true;
                 }
             } else {

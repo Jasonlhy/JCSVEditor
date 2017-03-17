@@ -126,7 +126,18 @@ public class TestCSVLIneParser {
         String[] actual = new String[tokens.size()];
         tokens.toArray(actual);
 
-        String[] expected = new String[]{"", "", ""};
+        String[] expected = new String[]{"", "", "", ""};
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void testTwoConsecutiveCommas(){
+        CSVLineParser parser = new CSVLineParser(",,22");
+        List<String> tokens = parser.parseLine();
+        String[] actual = new String[tokens.size()];
+        tokens.toArray(actual);
+
+        String[] expected = new String[]{"", "", "22"};
         assertArrayEquals(expected, actual);
     }
 
