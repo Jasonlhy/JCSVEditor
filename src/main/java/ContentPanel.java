@@ -1,6 +1,7 @@
 import jcsveditor.view.CSVTableModel;
 
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
 import java.awt.*;
 import java.io.File;
@@ -8,16 +9,16 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
-/* Title: ContePanel
-* Aurthor : Liu Ho Yin
+/* Title: ContentPanel
+* Aurthur : Liu Ho Yin
 * Last Modified : 25-5-2012
 *
-* This class is a view assoicated with the FIleRecord mdeol which stores file records
+* This class is a view associated with the FIleRecord model which stores file records
 * It owns JTabbedPane, JDesktopPane. Both of them are used to show the file content.
-* The view between them can be swtiched
-* Both of them will respone to the change in FIleRecord model
-* such as createing new fil, opening a file, savves as file
-* Some content may be added, removed, renamed in responed to the change
+* The view between them can be switched
+* Both of them will response to the change in FIleRecord model
+* such as creating new file, opening a file, save as file
+* Some content may be added, removed, renamed in response to the change
 * */
 
 public class ContentPanel extends JPanel implements Observer {
@@ -30,9 +31,9 @@ public class ContentPanel extends JPanel implements Observer {
 
     // control value for view
     public static String TAB_VIEW = "Tab View";
-    public static String INTERNALFRAME_VIEW = "InternalFrame View";
+    public static String INTERAL_FRAME_VIEW = "InternalFrame View";
 
-    // for arraging internalFrame
+    // for arranging internalFrame
     public static int x = 0;
     public static int y = 0;
 
@@ -53,7 +54,7 @@ public class ContentPanel extends JPanel implements Observer {
 
         // add pane into card panel
         cardPanel.add(tabbedPane, TAB_VIEW);
-        cardPanel.add(desktopPane, INTERNALFRAME_VIEW);
+        cardPanel.add(desktopPane, INTERAL_FRAME_VIEW);
 
         // show tab view by default
         this.view = TAB_VIEW;
@@ -98,13 +99,12 @@ public class ContentPanel extends JPanel implements Observer {
             try {
                 // Add the text to the document
                 document.insertString(0, fileData, null);
-
-            } catch (Exception e) {
+            } catch (BadLocationException e) {
+                e.printStackTrace();
             }
 
             newContent1 = new JTextPane(document);
             newContent2 = new JTextPane(document);
-
         } else { // csv
             // prepare file data
             Object[][] cells;
@@ -128,7 +128,7 @@ public class ContentPanel extends JPanel implements Observer {
             table1.setDragEnabled(false);
             table2.setDragEnabled(false);
 
-            // for scroolling
+            // for scrolling
             table1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
             table2.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
@@ -152,9 +152,8 @@ public class ContentPanel extends JPanel implements Observer {
         orderOfFrame.add(internalFrame);
 
 		/* view for tab view */
-        tabbedPane.addTab(file.getName(), new JScrollPane(newContent2));
+        tabbedPane.addTab(file.getName(), new JScrollPane(newContent2, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
         tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
-
     }
 
     /* to change the view */
@@ -179,17 +178,17 @@ public class ContentPanel extends JPanel implements Observer {
 
     /* update when file record has changed */
     public void update(Observable o, Object status) {
-        if (status == FileRecord.ADD_NEW_FILE) {
-            // frecth the file reference from the model and add contents into
-            // view
-            // use the file reference to make context
+        if (status == FileChangeOption.ADD_NEW_FILE) {
+            // 1. Get the file reference from the model
+            // 2. Add contents into view
+            // 3. Use the file reference to make context
             File file = record.getLastFile();
             addContent(file);
-        } else if (status == FileRecord.ADD_EXIST_FILE) {
+        } else if (status == FileChangeOption.ADD_EXIST_FILE) {
             // get the file just added from model and add its name into the list
             File file = record.getLastFile();
             addContent(file);
-        } else if (status == FileRecord.REMOVE_FILE) { // the model remove a
+        } else if (status == FileChangeOption.REMOVE_FILE) { // the model remove a
             // file , and the index
             // not supposed to be
             // here is going to be
@@ -201,7 +200,7 @@ public class ContentPanel extends JPanel implements Observer {
             desktopPane.remove(frame);
             desktopPane.updateUI(); // prevent a bug because of unknow reason
 
-        } else if (status == FileRecord.CHANGE_FILE) { // the model remove a
+        } else if (status == FileChangeOption.CHANGE_FILE) { // the model remove a
             // file , change the
             // index title
             // get the new title
@@ -214,7 +213,7 @@ public class ContentPanel extends JPanel implements Observer {
             frame.setTitle(name);
             desktopPane.updateUI(); // prevent a bug because of unknow reason
 
-        } else if (status == FileRecord.REMOVE_ALL) { // fileRecord remove all
+        } else if (status == FileChangeOption.REMOVE_ALL) { // fileRecord remove all
             // file
             tabbedPane.removeAll();
 
@@ -222,8 +221,16 @@ public class ContentPanel extends JPanel implements Observer {
             desktopPane.updateUI();
 
             orderOfFrame.clear();
-        }
+        } else if (status == FileChangeOption.REFRESH_FILE){
+            int idx = tabbedPane.getSelectedIndex();
+            File file = record.getFileAt(idx);
+            JScrollPane pane = (JScrollPane) tabbedPane.getComponentAt(idx);
+            JViewport viewport = pane.getViewport();
+            JTable table = (JTable) viewport.getView();
 
+            Object[][] cells = IOSystem.readCSV(file);
+            table.setModel(new CSVTableModel(cells));
+        }
     }
 
     /*
@@ -251,7 +258,7 @@ public class ContentPanel extends JPanel implements Observer {
     /* get content componened in selected tabbedPane/internalFrame */
     public Component getSelectedComponent() {
         JScrollPane selectedScrollPane = selectedScrollPane = (JScrollPane) tabbedPane.getSelectedComponent();
-        if (view.equals(INTERNALFRAME_VIEW)) {
+        if (view.equals(INTERAL_FRAME_VIEW)) {
             JInternalFrame frame = (JInternalFrame) desktopPane.getSelectedFrame();
             Container container = frame.getContentPane();
             selectedScrollPane = (JScrollPane) container.getComponent(0);

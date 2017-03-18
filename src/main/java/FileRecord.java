@@ -6,7 +6,6 @@ import java.util.Observable;
  * Author: Liu Ho Yin
  * Last Modifired: 25-5-2012
  * act as a model for jlist,editing view (RightOfEditor)*/
-
 public class FileRecord extends Observable {
     // a data structure to store the file record
     private LinkedList<File> list = new LinkedList<File>();
@@ -14,11 +13,6 @@ public class FileRecord extends Observable {
     private int changedFileIndex = 0;
 
     // status to indicate the change to this FileRecord Model
-    public final static Integer ADD_NEW_FILE = 1234;
-    public final static Integer ADD_EXIST_FILE = 12345;
-    public final static Integer REMOVE_FILE = 1234567;
-    public final static Integer CHANGE_FILE = 12345678;
-    public final static Integer REMOVE_ALL = 123232984;
 
     // counter variable for countering the new file
     public static Integer newFileCounter = 0;
@@ -34,7 +28,23 @@ public class FileRecord extends Observable {
 
         // tell the views to update
         setChanged();
-        notifyObservers(ADD_NEW_FILE);
+        notifyObservers(FileChangeOption.ADD_NEW_FILE);
+    }
+
+    /**
+     * Is the file added into the editor
+     *
+     * @param file
+     * @return True if the file added into the editor, false if the added is not added into the editor
+     */
+    public boolean contains(File file) {
+        if (file == null){
+            throw  new IllegalArgumentException("file cannot be null");
+        }
+
+        return list.stream().anyMatch( f->
+                f.getAbsolutePath().equals(file.getAbsolutePath())
+        );
     }
 
     /* add a exist file record , the parameter is passed from controller */
@@ -43,7 +53,7 @@ public class FileRecord extends Observable {
 
         // tell the views to update
         setChanged();
-        notifyObservers(ADD_EXIST_FILE);
+        notifyObservers(FileChangeOption.ADD_EXIST_FILE);
     }
 
     /*
@@ -56,7 +66,7 @@ public class FileRecord extends Observable {
 
         // tell the views to update
         setChanged();
-        notifyObservers(REMOVE_FILE);
+        notifyObservers(FileChangeOption.REMOVE_FILE);
     }
 
     /* return a file at the particular index */
@@ -86,7 +96,7 @@ public class FileRecord extends Observable {
 
         // tell the views to update
         setChanged();
-        notifyObservers(CHANGE_FILE);
+        notifyObservers(FileChangeOption.CHANGE_FILE);
     }
 
     /* return changedFileIndex */
@@ -112,12 +122,12 @@ public class FileRecord extends Observable {
 
         // update view
         setChanged();
-        notifyObservers(REMOVE_ALL);
+        notifyObservers(FileChangeOption.REMOVE_ALL);
     }
 
-    /* return the index of a partifuclar file record */
-    public int indexOf(File file) {
-        return list.indexOf(file);
+    public void refreshFile() {
+        // update view
+        setChanged();
+        notifyObservers(FileChangeOption.REFRESH_FILE);
     }
-
 }

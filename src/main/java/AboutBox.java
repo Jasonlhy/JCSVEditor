@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 
 class AboutBox extends JDialog {
     public AboutBox(Frame owner) {
-        super(owner, "JasonEditor", true);
+        super(owner, "JCSVEditor", true);
 
         JLabel lbl = new JLabel(new ImageIcon("../graph/icon.png"));
         JPanel p = new JPanel();
@@ -17,7 +17,7 @@ class AboutBox extends JDialog {
         p.add(lbl);
         getContentPane().add(p, BorderLayout.WEST);
 
-        String message = "JasonEditor\n"
+        String message = "JCSVEditor\n"
                 + "Copyright (c) Jason Liu, 2012";
         JTextArea txt = new JTextArea(message);
         txt.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));

@@ -16,7 +16,7 @@ import java.util.LinkedList;
  * 
  * THis is the main class for gui 
  * and make each class to have comuunication*/
-public class JasonEditor extends JFrame {
+public class JCSVEditor extends JFrame {
 
     JFileChooser fc;
     File oldFile = null;
@@ -35,8 +35,8 @@ public class JasonEditor extends JFrame {
     FileRecord record;
     LinkedList<File> fileCache;
 
-    public JasonEditor() {
-        super("JasonEditor");
+    public JCSVEditor() {
+        super("JCSVEditor");
 
         fileCache = new LinkedList<File>();
         record = new FileRecord();
@@ -88,7 +88,7 @@ public class JasonEditor extends JFrame {
         Action removeColumnAction = new RemoveColumnAction("remove column",
                 new ImageIcon("./graph/remove_column.PNG"));
 
-        // otehr aciotn
+        // other aciotn
         Action clearCellAction = new ClearCellAction("Clear cell", new ImageIcon("./graph/clear_cell.png"));
         Action newCellAction = new NewCellAction("New cell", new ImageIcon("./graph/new_cell.png"));
 
@@ -134,12 +134,18 @@ public class JasonEditor extends JFrame {
         JMenu columnMenu = new JMenu("Column");
         JMenuItem clearCellMenuItem = new JMenuItem(clearCellAction);
         JMenuItem newCellMenuItem = new JMenuItem(newCellAction);
+        JMenuItem refreshMenuItem = new JMenuItem("Refresh");
+        refreshMenuItem.addActionListener(e -> {
+                record.refreshFile();
+            }
+        );
 
         tableMenu.add(rowMenu);
         tableMenu.add(columnMenu);
         tableMenu.addSeparator();
         tableMenu.add(clearCellMenuItem);
         tableMenu.add(newCellMenuItem);
+        tableMenu.add(refreshMenuItem);
 
         // nest rowMenu
         rowMenu.setIcon(new ImageIcon("./graph/row.jpg"));
@@ -173,7 +179,7 @@ public class JasonEditor extends JFrame {
 		/* Tool Bar */
         toolBar = new JToolBar();
         Integer[] sizeArray = {6, 8, 12, 18, 24, 36, 48, 60, 80};
-        String[] viewArray = {ContentPanel.TAB_VIEW, ContentPanel.INTERNALFRAME_VIEW};
+        String[] viewArray = {ContentPanel.TAB_VIEW, ContentPanel.INTERAL_FRAME_VIEW};
 
         // file button
         JButton newCSV = new JButton(newCSVAction);
@@ -360,7 +366,6 @@ public class JasonEditor extends JFrame {
             int index = list.getSelectedIndex();
 
             if (index >= 0) {
-                System.out.println(index);
                 contentPanel.setSelectedAt(index);
             }
         }
@@ -392,6 +397,20 @@ public class JasonEditor extends JFrame {
 
     }
 
+    /**
+     * Action for refreshing current selected document
+     */
+    private class RefreshAction extends AbstractAction {
+        public RefreshAction(String text, ImageIcon icon) {
+            super(text, icon);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+
+        }
+    }
+
     /* action for open a exisitng file */
     private class OpenAction extends AbstractAction {
         public OpenAction(String text, ImageIcon icon, int mnemonic) {
@@ -404,11 +423,14 @@ public class JasonEditor extends JFrame {
         public void actionPerformed(ActionEvent e) {
             int value = fc.showOpenDialog(null);
             if (value == JFileChooser.APPROVE_OPTION) {
-                record.addExistFile(fc.getSelectedFile());
+                File file = fc.getSelectedFile();
+                if (record.contains(file)){
+                    JOptionPane.showMessageDialog(null, "The file already exists ");
+                } else {
+                    record.addExistFile(file);
+                }
             }
-
         }
-
     }
 
     /* action to save a file */
@@ -838,4 +860,8 @@ public class JasonEditor extends JFrame {
         }
     }
 
+    public static void main(String [] args){
+        JCSVEditor editor = new JCSVEditor();
+        editor.setVisible(true);
+    }
 }

@@ -9,13 +9,14 @@ import java.io.File;
 
 /* Title InformationPanel
  * Author Liu Ho Yin
- * Modifired 25-5-2012
- * A tabbedpane to show the list of file and the tree*/
+ * Modified 25-5-2012
+ * A tabbed Panel to show the list of file and the tree*/
 public class InformationPanel extends JTabbedPane {
     private JTree fileTree;
     private DefaultTreeModel model;
     private JListPane listPane;
     private FileRecord record;
+
 
     public InformationPanel(FileRecord record) {
         super(JTabbedPane.TOP);
@@ -30,13 +31,13 @@ public class InformationPanel extends JTabbedPane {
             node = new DefaultMutableTreeNode(new FileNode(roots[k]));
             top.add(node);
             // add a dummy node which will only load data when expand
-            node.add(new DefaultMutableTreeNode(new Boolean(true)));
+            node.add(new DefaultMutableTreeNode((true)));
         }
 
         model = new DefaultTreeModel(top);
         fileTree = new JTree(model);
 
-        fileTree.putClientProperty("JTree.lineStyle", "Angled");
+        // fileTree.putClientProperty("JTree.lineStyle", "Angled");
         fileTree.setShowsRootHandles(true);
         fileTree.setEditable(false);
 
@@ -53,59 +54,47 @@ public class InformationPanel extends JTabbedPane {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) (event.getPath().getLastPathComponent());
                 FileNode fn = (FileNode) (node.getUserObject());
                 fn.expand(node);
-                model.reload(node);
 
+                model.reload(node);
             }
 
             public void treeWillCollapse(TreeExpansionEvent event) {
             }
         });
 
-        // make jfilelist
+        // File list
         listPane = new JListPane(record);
         fileTree.addMouseListener(new FileTreeMouseListener());
 
 		/* add all things into tab */
-        addTab("File Expoler", new JScrollPane(fileTree));
+        addTab("File Explorer", new JScrollPane(fileTree));
         addTab("Opened File", new JScrollPane(listPane));
     }
 
     /**
      * getter and setter
      */
-    public JTree getFileTree() {
-        return fileTree;
-    }
-
-    public void setFileTree(JTree fileTree) {
-        this.fileTree = fileTree;
-    }
-
     public JListPane getListPane() {
         return listPane;
     }
 
-    public void setlistPane(JListPane listPane) {
-        this.listPane = listPane;
-    }
-
     private class FileTreeMouseListener extends MouseAdapter {
-        public void mouseClicked(MouseEvent e) {
-            // get the row index of mouse clicked
-            int selRow = fileTree.getRowForLocation(e.getX(), e.getY());
-            // get the selected row index
-            int[] rows = fileTree.getSelectionRows();
-            // selection event (in select,out of select) component
 
-            if (rows != null && rows[0] != 0 && rows[0] == selRow && e.getClickCount() == 2) {
-                // get the component that tree is holding -> get the object in
-                // mutable node-> get the file in file noe
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            int[] rows = fileTree.getSelectionRows();
+
+            if (rows.length > 0 &&  e.getClickCount() == MouseEvent.MOUSE_PRESSED) {
+                // 1. Get the component that tree is holding
+                // 2. Get the object in mutable node
+                // 3. Get the file inside
                 DefaultMutableTreeNode holdingNode = (DefaultMutableTreeNode) fileTree.getLastSelectedPathComponent();
                 FileNode fileNode = (FileNode) holdingNode.getUserObject();
                 File file = fileNode.getFile();
 
-                if (file.isFile())
+                if (file.isFile()){
                     record.addExistFile(file);
+                }
             }
 
         }
@@ -169,7 +158,7 @@ class FileNode {
 
     public static boolean isSelectableFile(File file) {
         String fullFileName = file.getName();
-        String extension = "";
+        String extension;
         int mid = fullFileName.lastIndexOf(".");
         extension = fullFileName.substring(mid + 1, fullFileName.length());
         if (extension.equals("txt") || extension.equals("csv"))
@@ -181,7 +170,6 @@ class FileNode {
 }
 
 class FileTreeCellRenderer extends DefaultTreeCellRenderer {
-
     public Component getTreeCellRendererComponent(JTree fileTree, Object value, boolean sel, boolean expanded,
                                                   boolean leaf, int row, boolean hasFocus) {
 
@@ -192,7 +180,7 @@ class FileTreeCellRenderer extends DefaultTreeCellRenderer {
         setText(fileName);
 
         // check file type
-        String extension = "";
+        String extension;
         int mid = fileName.lastIndexOf(".");
         extension = fileName.substring(mid + 1, fileName.length());
 
@@ -204,7 +192,7 @@ class FileTreeCellRenderer extends DefaultTreeCellRenderer {
         if (obj instanceof Boolean)
             setText("Retrieving data...");
 
-        // set beuatiful file graph
+        // set beautiful file graph
         if (extension.equals("txt"))
             setIcon(new ImageIcon("../graph/txt.PNG"));
         else if (extension.equals("csv"))

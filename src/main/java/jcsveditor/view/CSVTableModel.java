@@ -16,11 +16,6 @@ public class CSVTableModel extends AbstractTableModel {
     private Object[][] cells;
     private String[] columnNames;
 
-    /* no data providied */
-    public CSVTableModel() {
-        this(null, null);
-    }
-
     public CSVTableModel(Object[][] cells) {
         this(cells, null);
     }
@@ -48,7 +43,8 @@ public class CSVTableModel extends AbstractTableModel {
     }
 
     public Class getColumnClass(int c) {
-        return cells[0][c].getClass();
+        // return cells[0][c].getClass();
+        return String.class;
     }
 
     public int getColumnCount() {

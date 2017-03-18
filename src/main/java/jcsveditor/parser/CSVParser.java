@@ -73,8 +73,12 @@ public class CSVParser {
     }
 
     public static void main(String[] args) {
-        File file = new File("C:\\Users\\jason\\Desktop\\a.txt");
-        CSVParser parser = new CSVParser(file);
-        parser.showResult();
+        // File file = new File("C:\\Users\\jason\\Desktop\\a.txt");
+        // CSVParser parser = new CSVParser(file);
+        // parser.showResult();
+
+        CSVLineParser lineParser = new CSVLineParser("123,");
+        List<String> strs = lineParser.parseLine();
+
     }
 }
