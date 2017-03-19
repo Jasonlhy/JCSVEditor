@@ -51,6 +51,11 @@ public class CSVLineParser {
         List<String> cellValues = new LinkedList<>();
         char current;
 
+        // edge case: first one is ,
+        if (peek() == ','){
+            cellValues.add("");
+        }
+
         do {
             builder.setLength(0);
             current = peek();
@@ -61,26 +66,32 @@ public class CSVLineParser {
                 readEscapedValue(builder);
                 cellValues.add(builder.toString());
             } else if (current == ',') {
-                // only will encounter ',' if ",,"
-                // other will be consumed by parsing in value
+                // , as delimiter
+                // assume before it has a value
+                // also eat continuous ,
                 next();
-                cellValues.add("");
+
+                // for continuous ,  e.g. "aaa|,,|bbbb"
+                while (!isEnd() && peek() == ','){
+                    cellValues.add("");
+                    next();
+                }
+
+                // edge case: last one is ,
+                if (isEnd()){
+                    cellValues.add("");
+                }
             } else {
                 readNonEscapedValue(builder);
                 cellValues.add(builder.toString());
             }
         } while (!isEnd());
 
-        // edge case: last one is commas
-        if (current == ','){
-            cellValues.add("");
-        }
-
         return cellValues;
     }
 
     /**
-     * Read everything to , or EOL
+     * Read everything util , or EOL
      *
      * @param builder
      */
@@ -96,7 +107,6 @@ public class CSVLineParser {
 
             char c = peek();
             if (c == ',') {
-                next();
                 foundComma = true;
             } else {
                 builder.append(c);
@@ -106,7 +116,7 @@ public class CSVLineParser {
     }
 
     /**
-     * Read everything to ", or to "EOL
+     * Read everything util ", or to "EOL
      *
      * @param builder
      */
@@ -133,10 +143,6 @@ public class CSVLineParser {
                     // assume it is followed by ',' or EOL
                     if (!isEnd() && peek() != ',') {
                         throw new CSVParseException("Expected , at columns: " + idx);
-                    }
-
-                    if (!isEnd() && peek() == ','){
-                        next();
                     }
 
                     foundDoubleQuote = true;

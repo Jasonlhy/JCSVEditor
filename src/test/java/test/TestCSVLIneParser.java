@@ -141,4 +141,47 @@ public class TestCSVLIneParser {
         assertArrayEquals(expected, actual);
     }
 
+    @Test
+    public void testNonEscapedLastColumnEmpty(){
+        CSVLineParser parser = new CSVLineParser("123,");
+        List<String> tokens = parser.parseLine();
+        String[] actual = new String[tokens.size()];
+        tokens.toArray(actual);
+
+        String[] expected = new String[]{"123", ""};
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void testEscapedLastColumnEmpty(){
+        CSVLineParser parser = new CSVLineParser("\"123\",");
+        List<String> tokens = parser.parseLine();
+        String[] actual = new String[tokens.size()];
+        tokens.toArray(actual);
+
+        String[] expected = new String[]{"123", ""};
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void testSingleNonEscapedValue(){
+        CSVLineParser parser = new CSVLineParser("123");
+        List<String> tokens = parser.parseLine();
+        String[] actual = new String[tokens.size()];
+        tokens.toArray(actual);
+
+        String[] expected = new String[]{"123"};
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void testSingleEscapedValue(){
+        CSVLineParser parser = new CSVLineParser("\"123\"");
+        List<String> tokens = parser.parseLine();
+        String[] actual = new String[tokens.size()];
+        tokens.toArray(actual);
+
+        String[] expected = new String[]{"123"};
+        assertArrayEquals(expected, actual);
+    }
 }
