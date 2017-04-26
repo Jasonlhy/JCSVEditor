@@ -6,9 +6,6 @@
         <element id="file-copy" path="$PROJECT_DIR$/src/main/java/META-INF/MANIFEST.MF" />
       </element>
       <element id="module-output" name="JCSVEditor" />
-      <element id="directory" name="graph">
-        <element id="dir-copy" path="$PROJECT_DIR$/graph" />
-      </element>
     </root>
   </artifact>
 </component>

@@ -128,6 +128,11 @@ public class ContentPanel extends JPanel implements Observer {
             table1.setDragEnabled(false);
             table2.setDragEnabled(false);
 
+            // the original font is Dialog which do not supports UTF-8
+            // assume system sans_serif supports the file encoding such as UTF-8
+            table1.setFont(new Font("SANS_SERIF", Font.PLAIN, 12));
+            table2.setFont(new Font("SANS_SERIF", Font.PLAIN, 12));
+
             // for scrolling
             table1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
             table2.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
