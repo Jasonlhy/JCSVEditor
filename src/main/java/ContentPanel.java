@@ -1,6 +1,7 @@
 import jcsveditor.view.CSVTableModel;
 
 import javax.swing.*;
+import javax.swing.table.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
 import java.awt.*;
@@ -120,9 +121,9 @@ public class ContentPanel extends JPanel implements Observer {
 
             // for cell selection
             table1.setRowSelectionAllowed(true);
-            table1.setColumnSelectionAllowed(true);
+            table1.setColumnSelectionAllowed(false);
             table2.setRowSelectionAllowed(true);
-            table2.setColumnSelectionAllowed(true);
+            table2.setColumnSelectionAllowed(false);
 
             // for not draggable
             table1.setDragEnabled(false);
@@ -157,8 +158,24 @@ public class ContentPanel extends JPanel implements Observer {
         orderOfFrame.add(internalFrame);
 
 		/* view for tab view */
+        resizeColumnWidth((JTable) newContent2);
         tabbedPane.addTab(file.getName(), new JScrollPane(newContent2, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
         tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
+    }
+
+    public void resizeColumnWidth(JTable table) {
+        final TableColumnModel columnModel = table.getColumnModel();
+        for (int column = 0; column < table.getColumnCount(); column++) {
+            int width = 15; // Min width
+            for (int row = 0; row < table.getRowCount(); row++) {
+                TableCellRenderer renderer = table.getCellRenderer(row, column);
+                Component comp = table.prepareRenderer(renderer, row, column);
+                width = Math.max(comp.getPreferredSize().width +1 , width);
+            }
+            if(width > 300)
+                width=300;
+            columnModel.getColumn(column).setPreferredWidth(width);
+        }
     }
 
     /* to change the view */
