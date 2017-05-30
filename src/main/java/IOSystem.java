@@ -35,6 +35,11 @@ public class IOSystem {
     // read for csv
     public static Object[][] readCSV(File file) {
         CSVParser parser = new CSVParser(file);
+        try {
+            parser.parse();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return parser.getResults();
     }
 

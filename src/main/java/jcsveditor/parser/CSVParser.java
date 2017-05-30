@@ -1,62 +1,169 @@
 package jcsveditor.parser;
 
-import java.io.*;
-import java.util.LinkedList;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CSVParser {
-
-    private CSVLineParser lineParser;
+    private CSVTokenizer token;
     private String[][] results;
 
     public String[][] getResults() {
         return results;
     }
 
-    public CSVParser(){
-        this.lineParser = new CSVLineParser();
+    public CSVParser(String path) {
+        this.token = new CSVTokenizer(path);
     }
 
     public CSVParser(File file) {
-        this.lineParser = new CSVLineParser();
+        this.token = new CSVTokenizer(file);
+    }
 
-        List<List<String>> rowValues = new LinkedList<>();
-        try {
-            try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-                int numRow = 0;
-                int numCol = 0;
-                String line = br.readLine();
+    /**
+     * Number of column depend on number of value field
+     *
+     * @return
+     */
+    public void parse() throws IOException {
+        List<List<String>> rowValues = new ArrayList<>();
 
-                while (line != null) {
-                    lineParser.setLine(line);
+        int numRow = 0;
+        int numCol = 0;
+        do {
+            List<String> cellValues = parseLine();
+//            System.out.println("ine!!!");
+            rowValues.add(cellValues);
+            if (cellValues.size() > numCol) {
+                numCol = cellValues.size();
+            }
+            numRow++;
+        } while (!token.isEOF());
 
-                    List<String> cellValues = lineParser.parseLine();
-                    rowValues.add(cellValues);
-                    if (cellValues.size() > numCol) {
-                        numCol = cellValues.size();
+        System.out.println("numRow: " + numRow);
+        System.out.println("numCol: " + numCol);
+        results = new String[numRow][numCol];
+
+        int i = 0;
+        for (List<String> rowValue : rowValues) {
+            rowValue.toArray(results[i]);
+            i++;
+        }
+    }
+
+    /**
+     * Read a CSV line
+     *
+     * @return
+     * @throws IOException
+     */
+    private List<String> parseLine() throws IOException {
+        token.next();
+
+        // init
+        StringBuilder builder = new StringBuilder();
+
+        // prepare
+        List<String> cellValues = new ArrayList<>();
+        char current;
+
+        // edge case: first one is ,
+        if (token.peek() == ','){
+            cellValues.add("");
+        }
+
+        do {
+            builder.setLength(0);
+            current = token.peek();
+
+            // ',' will be skip in method
+            if (current == '"') {
+                token.next();
+                readEscapedValue(builder);
+                cellValues.add(builder.toString());
+            } else if (current == ',') {
+                // , as delimiter
+                // assume before it has a value
+                // also eat continuous ,
+                token.next();
+
+                // for continuous ,  e.g. "aaa|,,|bbbb"
+                while (!token.isEOL() && token.peek() == ','){
+                    cellValues.add("");
+                    token.next();
+                }
+
+                // edge case: last one is ,
+                if (token.isEOL()){
+                    cellValues.add("");
+                }
+            } else {
+                readNonEscapedValue(builder);
+                cellValues.add(builder.toString());
+            }
+        } while (!token.isEOL() && !token.isEOF());
+
+        return cellValues;
+    }
+
+    /**
+     * Read everything util , or EOL
+     *
+     * @param builder
+     */
+    private void readNonEscapedValue(StringBuilder builder) throws IOException {
+        if (token.isEOL()) {
+            // throw new CSVParseException("Unexpected End");
+        }
+
+        boolean foundComma;
+        do {
+            foundComma = false;
+
+            char c = token.peek();
+            if (c == ',') {
+                foundComma = true;
+            } else {
+                builder.append(c);
+                token.next();
+            }
+        } while (!token.isEOL() && !token.isEOF() && !foundComma);
+    }
+
+    /**
+     * Read everything util ", or to "EOL
+     *
+     * @param builder
+     */
+    private void readEscapedValue(StringBuilder builder) throws IOException {
+        boolean foundDoubleQuote;
+        do {
+            foundDoubleQuote = false;
+            char c = token.peek();
+
+            if (c == '"') {
+                token.next();
+
+                if (!token.isEOL() && token.peek() == '"') {
+                    // 2double quote
+                    builder.append('"');
+
+                    // assume it is not end
+                    token.next();
+                } else {
+                    // assume it is followed by ',' or EOL
+                    if (!token.isEOL() && token.peek() != ',') {
+//                        throw new CSVParseException("Expected , at columns: " + idx);
                     }
 
-                    numRow++;
-
-                    line = br.readLine();
+                    foundDoubleQuote = true;
                 }
-
-                System.out.println("numRow: " + numRow);
-                System.out.println("numCol: " + numCol);
-                results = new String[numRow][numCol];
-
-                int i = 0;
-                for (List<String> rowValue : rowValues) {
-                    rowValue.toArray(results[i]);
-
-                    i++;
-                }
+            } else {
+                builder.append(c);
+                token.next();
             }
-        } catch (FileNotFoundException ex) {
-            throw new CSVParseException("Cannot found the csv file" + ex);
-        } catch (IOException ex) {
-            throw new CSVParseException("Cannot read the csv file " + ex);
-        }
+        } while (!token.isEOL() && !foundDoubleQuote);
     }
 
     /**
@@ -72,13 +179,12 @@ public class CSVParser {
         }
     }
 
-    public static void main(String[] args) {
-        // File file = new File("C:\\Users\\jason\\Desktop\\a.txt");
-        // CSVParser parser = new CSVParser(file);
-        // parser.showResult();
+    public static void main(String[] args) throws IOException {
+//        CSVParser parser = new CSVParser("C:\\Users\\jason\\Desktop\\single.csv");
+//        parser.parseLine();
+        CSVParser parser = new CSVParser("C:\\Users\\jason\\Desktop\\single_escape.csv");
+        parser.parse();
 
-        CSVLineParser lineParser = new CSVLineParser("123,");
-        List<String> strs = lineParser.parseLine();
-
+        System.out.println("end of program");
     }
 }

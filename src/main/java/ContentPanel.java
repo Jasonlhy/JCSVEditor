@@ -172,8 +172,8 @@ public class ContentPanel extends JPanel implements Observer {
                 Component comp = table.prepareRenderer(renderer, row, column);
                 width = Math.max(comp.getPreferredSize().width +1 , width);
             }
-            if(width > 300)
-                width=300;
+//            if(width > 300)
+//                width=300;
             columnModel.getColumn(column).setPreferredWidth(width);
         }
     }
