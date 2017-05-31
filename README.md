@@ -15,8 +15,12 @@ I just want to have a lightweight CSV editor which displays the raw data and hav
 Note:
 
 - Excel can display the data with correct encoding using [Import from Text approach](https://superuser.com/questions/280603/how-to-set-character-encoding-when-opening-excel)
-- Or PowerShell in windows: `Import-Csv .\utf8.csv | Out-GridView`
+- Or PowerShell in windows (I think this only supports utf8): `Import-Csv .\utf8.csv | Out-GridView`
 
 # Known issue
-- The input file should be a valid csv format, and no leading and no trailing empty row.
-- The field cannot contain line breaks
+- The input file should be a [valid csv format](https://tools.ietf.org/html/rfc4180), with no leading and no trailing empty row.
+- Problem with saving utf 8 with bom file, the invisible byte order mask is embedded in the cell value, need to remove the [byte order mask]. (https://en.wikipedia.org/wiki/Byte_order_mark)
+
+# Enhancement Planning
+- Better error handling
+- Remove the byte order mask with saving utf 8 with bom
