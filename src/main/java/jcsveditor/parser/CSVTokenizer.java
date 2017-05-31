@@ -95,8 +95,9 @@ public class CSVTokenizer {
      * @throws IOException if end of line or error in reading the file
      */
     public int next() throws IOException {
+        int previousChar = currentChar;
         currentChar = reader.read();
-        if (eol && currentChar == NEW_LINE){
+        if (eol && previousChar == CARRIAGE_RETURN && currentChar == NEW_LINE){
             currentChar = reader.read();
         }
         eol = (currentChar == CARRIAGE_RETURN) || (currentChar == NEW_LINE);
