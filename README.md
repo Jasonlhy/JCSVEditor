@@ -32,7 +32,7 @@ Note:
 
 # Known issue
 - The input file should be a [valid csv format](https://tools.ietf.org/html/rfc4180), with no leading and no trailing empty row.
-- Problem with saving utf 8 with bom file, the invisible byte order mask is embedded in the cell value, need to remove the [byte order mask]. (https://en.wikipedia.org/wiki/Byte_order_mark)
+- Problem with saving utf 8 with bom file, the invisible byte order mask is embedded in the cell value, need to remove the [byte order mask](https://en.wikipedia.org/wiki/Byte_order_mark)
 - The line break embedded inside double always is `\n`
 
 # Enhancement Planning
