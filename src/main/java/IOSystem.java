@@ -110,7 +110,9 @@ public class IOSystem {
                     }
                 }
 
-                builder.append(LINE_SEPARATOR);
+                if (i != maxRowIndex){
+                    builder.append(LINE_SEPARATOR);
+                }
             }
 
             try {

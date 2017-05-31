@@ -140,6 +140,12 @@ public class CSVLineParser {
                     // assume it is not end
                     next();
                 } else {
+                    System.out.println("idx: " + idx);
+                    System.out.println("c: " + c);
+                    if (!(isEnd())){
+                        System.out.println("peek(): " + peek());
+                    }
+
                     // assume it is followed by ',' or EOL
                     if (!isEnd() && peek() != ',') {
                         throw new CSVParseException("Expected , at columns: " + idx);
