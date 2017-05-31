@@ -88,7 +88,8 @@ public class IOSystem {
                     if (cellContent != null) {
                         boolean containDoubleQuote = cellContent.contains("\"");
                         boolean containCommas = cellContent.contains(",");
-                        boolean mustEscape = containDoubleQuote || containCommas;
+                        boolean containLineBreak = cellContent.contains("\n");
+                        boolean mustEscape = containDoubleQuote || containCommas || containLineBreak;
 
                         if (containDoubleQuote) {
                             cellContent = cellContent.replaceAll("\"", "\"\"");

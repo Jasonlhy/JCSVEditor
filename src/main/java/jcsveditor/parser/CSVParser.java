@@ -161,10 +161,14 @@ public class CSVParser {
                     foundDoubleQuote = true;
                 }
             } else {
-                builder.append(c);
+                if (token.isEOL()){
+                    builder.append("\n");
+                } else {
+                    builder.append(c);
+                }
                 token.next();
             }
-        } while (!token.isEOL() && !foundDoubleQuote);
+        } while (!token.isEOF() && !foundDoubleQuote);
     }
 
     /**
