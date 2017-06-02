@@ -34,12 +34,15 @@ public class CSVParser {
         int numCol = 0;
         do {
             List<String> cellValues = parseLine();
-//            System.out.println("ine!!!");
-            rowValues.add(cellValues);
-            if (cellValues.size() > numCol) {
-                numCol = cellValues.size();
+            // some csv file always have line break at the very end .... just ignore it
+            boolean isTrailingRow = cellValues.size() == 1 && (cellValues.get(0).charAt(0) == ((char) - 1));
+            if (!isTrailingRow){
+                rowValues.add(cellValues);
+                if (cellValues.size() > numCol) {
+                    numCol = cellValues.size();
+                }
+                numRow++;
             }
-            numRow++;
         } while (!token.isEOF());
 
         System.out.println("numRow: " + numRow);

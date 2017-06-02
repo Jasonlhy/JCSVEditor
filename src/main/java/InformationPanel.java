@@ -84,7 +84,7 @@ public class InformationPanel extends JTabbedPane {
         public void mouseClicked(MouseEvent e) {
             int[] rows = fileTree.getSelectionRows();
 
-            if (rows.length > 0 &&  e.getClickCount() == MouseEvent.MOUSE_PRESSED) {
+            if (rows.length > 0 &&  e.getClickCount() == 2) {
                 // 1. Get the component that tree is holding
                 // 2. Get the object in mutable node
                 // 3. Get the file inside
@@ -94,9 +94,9 @@ public class InformationPanel extends JTabbedPane {
 
                 if (file.isFile()){
                     record.addExistFile(file);
+                    fileTree.clearSelection();
                 }
             }
-
         }
     }
 
