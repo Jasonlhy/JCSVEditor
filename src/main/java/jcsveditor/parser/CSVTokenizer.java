@@ -1,9 +1,6 @@
 package jcsveditor.parser;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
@@ -27,6 +24,11 @@ public class CSVTokenizer {
 
     public char peek(){
         return (char) currentChar;
+    }
+
+    // this constructor is mainly used for testing
+    public CSVTokenizer(BufferedReader reader){
+        this.reader = reader;
     }
 
     public CSVTokenizer(String path){

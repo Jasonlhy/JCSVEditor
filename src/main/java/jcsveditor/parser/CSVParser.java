@@ -14,6 +14,11 @@ public class CSVParser {
         return results;
     }
 
+    // this constructor is mainly used for testing
+    public CSVParser(CSVTokenizer token) {
+        this.token = token;
+    }
+
     public CSVParser(String path) {
         this.token = new CSVTokenizer(path);
     }
@@ -27,7 +32,7 @@ public class CSVParser {
      *
      * @return
      */
-    public void parse() throws IOException {
+    public String[][] parse() throws IOException {
         List<List<String>> rowValues = new ArrayList<>();
 
         int numRow = 0;
@@ -54,6 +59,8 @@ public class CSVParser {
             rowValue.toArray(results[i]);
             i++;
         }
+
+        return results;
     }
 
     /**
@@ -99,7 +106,7 @@ public class CSVParser {
                 }
 
                 // edge case: last one is ,
-                if (token.isEOL()){
+                if (token.isEOL() || token.isEOF()){
                     cellValues.add("");
                 }
             } else {

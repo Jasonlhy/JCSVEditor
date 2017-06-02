@@ -2,7 +2,6 @@ import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 class AboutBox extends JDialog {
@@ -39,11 +38,7 @@ class AboutBox extends JDialog {
         getContentPane().add(p, BorderLayout.CENTER);
 
         JButton btOK = new JButton("OK");
-        ActionListener lst = new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                setVisible(false);
-            }
-        };
+        ActionListener lst = (e) -> setVisible(false);
         btOK.addActionListener(lst);
         p = new JPanel();
         p.add(btOK);
