@@ -1,3 +1,4 @@
+import jcsveditor.view.CSVTable;
 import jcsveditor.view.CSVTableModel;
 
 import javax.swing.*;
@@ -22,63 +23,6 @@ import java.util.Observer;
 * Some content may be added, removed, renamed in response to the change
 * */
 
-class TextAreaEditor extends DefaultCellEditor {
-    protected JScrollPane scrollpane;
-    protected JTextArea textarea;
-
-    public TextAreaEditor() {
-        super(new JCheckBox());
-        scrollpane = new JScrollPane();
-        textarea = new JTextArea();
-        scrollpane.getViewport().add(textarea);
-    }
-
-    public Component getTableCellEditorComponent(JTable table, Object value,
-                                                 boolean isSelected, int row, int column) {
-        textarea.setText((String) value);
-
-        return scrollpane;
-    }
-
-    public Object getCellEditorValue() {
-        return textarea.getText();
-    }
-}
-
-class TextAreaRenderer extends JScrollPane implements TableCellRenderer
-{
-    JTextArea textarea;
-
-    public TextAreaRenderer() {
-        textarea = new JTextArea();
-        getViewport().add(textarea);
-        this.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        this.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        this.setBorder(BorderFactory.createEmptyBorder());
-    }
-
-    public Component getTableCellRendererComponent(JTable table, Object value,
-                                                   boolean isSelected, boolean hasFocus,
-                                                   int row, int column)
-    {
-        if (isSelected) {
-            setForeground(table.getSelectionForeground());
-            setBackground(table.getSelectionBackground());
-            textarea.setForeground(table.getSelectionForeground());
-            textarea.setBackground(table.getSelectionBackground());
-        } else {
-            setForeground(table.getForeground());
-            setBackground(table.getBackground());
-            textarea.setForeground(table.getForeground());
-            textarea.setBackground(table.getBackground());
-        }
-
-        textarea.setText((String) value);
-        textarea.setCaretPosition(0);
-
-        return this;
-    }
-}
 
 public class ContentPanel extends JPanel implements Observer {
     private JPanel cardPanel; // holding tabbedPane and desktopPane ith between
@@ -174,33 +118,8 @@ public class ContentPanel extends JPanel implements Observer {
 
             // two "identical" tables
             CSVTableModel model = new CSVTableModel(cells);
-            JTable table1 = new JTable(model);
-            JTable table2 = new JTable(model);
-            table1.setDefaultRenderer(String.class, new TextAreaRenderer());
-            table2.setDefaultRenderer(String.class, new TextAreaRenderer());
-            table1.setRowHeight(40);
-            table2.setRowHeight(40);
-            table1.setDefaultEditor(String.class, new TextAreaEditor());
-            table2.setDefaultEditor(String.class, new TextAreaEditor());
-
-            // for cell selection
-            table1.setRowSelectionAllowed(true);
-            table1.setColumnSelectionAllowed(false);
-            table2.setRowSelectionAllowed(true);
-            table2.setColumnSelectionAllowed(false);
-
-            // for not draggable
-            table1.setDragEnabled(false);
-            table2.setDragEnabled(false);
-
-            // the original font is Dialog which do not supports UTF-8
-            // assume system sans_serif supports the file encoding such as UTF-8
-            table1.setFont(new Font("SANS_SERIF", Font.PLAIN, 12));
-            table2.setFont(new Font("SANS_SERIF", Font.PLAIN, 12));
-
-            // for scrolling
-            table1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-            table2.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+            JTable table1 = new CSVTable(model);
+            JTable table2 = new CSVTable(model);
 
             newContent1 = table1;
             newContent2 = table2;
@@ -222,7 +141,10 @@ public class ContentPanel extends JPanel implements Observer {
         orderOfFrame.add(internalFrame);
 
 		/* view for tab view */
-        resizeColumnWidth((JTable) newContent2);
+        // resizeColumnWidth((JTable) newContent2);
+        if (newContent2 instanceof JTable){
+            resizeColumnWidth((JTable) newContent2);
+        }
         tabbedPane.addTab(file.getName(), new JScrollPane(newContent2, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
         tabbedPane.setSelectedIndex(tabbedPane.getTabCount() - 1);
     }
@@ -230,14 +152,13 @@ public class ContentPanel extends JPanel implements Observer {
     public void resizeColumnWidth(JTable table) {
         final TableColumnModel columnModel = table.getColumnModel();
         for (int column = 0; column < table.getColumnCount(); column++) {
-            int width = 15; // Min width
+            int width = 40; // Min width
             for (int row = 0; row < table.getRowCount(); row++) {
                 TableCellRenderer renderer = table.getCellRenderer(row, column);
                 Component comp = table.prepareRenderer(renderer, row, column);
                 width = Math.max(comp.getPreferredSize().width +1 , width);
             }
-//            if(width > 300)
-//                width=300;
+
             columnModel.getColumn(column).setPreferredWidth(width);
         }
     }

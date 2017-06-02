@@ -34,36 +34,46 @@ public class CSVTableModel extends AbstractTableModel {
         return cells;
     }
 
-    /*
-         * return columnName for table header Inputted the columName ,use them
-         * otherwise user A,B,C,D from abstractTableModel
-         */
+    /**
+     * Return columnName for table header Inputted the columName ,use them
+     * otherwise user A,B,C,D from abstractTableModel
+     *
+     * @param c
+     * @return
+     */
+    @Override
     public String getColumnName(int c) {
         return (columnNames != null) ? columnNames[c] : super.getColumnName(c);
     }
 
+    @Override
     public Class getColumnClass(int c) {
         // return cells[0][c].getClass();
         return String.class;
     }
 
+    @Override
     public int getColumnCount() {
         return cells[0].length;
     }
 
+    @Override
     public int getRowCount() {
         return cells.length;
     }
 
+    @Override
     public Object getValueAt(int r, int c) {
         return cells[r][c];
     }
 
+    @Override
     public void setValueAt(Object obj, int r, int c) {
         cells[r][c] = obj;
         fireTableCellUpdated(r, c);
     }
 
+    @Override
     public boolean isCellEditable(int r, int c) {
         return true;
     }

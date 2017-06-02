@@ -758,14 +758,7 @@ public class JCSVEditor extends JFrame {
                     JOptionPane.showMessageDialog(null, "Cannot remove all column");
                 else {
                     int firstSelectedColumn = table.getSelectedColumn(); // a
-                    // flag
-                    // to
-                    // determine
-                    // if
-                    // there
-                    // is
-                    // any
-                    // selection
+                    // flag to determine if there is any selection
                     if (firstSelectedColumn == -1) // no selection-> default add
                         // to the toppest
                         System.out.println("You are kai");
