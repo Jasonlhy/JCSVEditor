@@ -9,8 +9,8 @@
         <module name="JCSVEditor" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="1.7">
-      <module name="JCSVEditor" target="1.8" />
+    <bytecodeTargetLevel target="8">
+      <module name="JCSVEditor" target="8" />
     </bytecodeTargetLevel>
   </component>
 </project>
